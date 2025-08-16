@@ -1,0 +1,2239 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TokoKita - Enhanced Online Store</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --primary-gradient: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --primary-soft: linear-gradient(135deg, #a8e6cf 0%, #88d8c0 100%);
+            --accent-gradient: linear-gradient(135deg, #ffeaa7 0%, #fab1a0 100%);
+            --warm-gradient: linear-gradient(135deg, #fd79a8 0%, #fdcb6e 100%);
+            --cool-gradient: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
+            --nature-gradient: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+            --shopee-gradient: linear-gradient(135deg, #ff6b35 0%, #f7931e 100%);
+            --tokopedia-gradient: linear-gradient(135deg, #42b883 0%, #00d084 100%);
+            --lazada-gradient: linear-gradient(135deg, #0f146d 0%, #1a56db 100%);
+            --blibli-gradient: linear-gradient(135deg, #0055aa 0%, #0099ff 100%);
+            
+            --bg-primary: #f8fafc;
+            --bg-secondary: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.95);
+            --bg-overlay: rgba(255, 255, 255, 0.1);
+            
+            --text-primary: #2d3748;
+            --text-secondary: #718096;
+            --text-muted: #a0aec0;
+            
+            --border-light: rgba(255, 255, 255, 0.2);
+            --border-soft: rgba(160, 174, 192, 0.2);
+            
+            --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-medium: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-large: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --transition-fast: all 0.15s ease;
+            --transition-normal: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-slow: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--primary-soft);
+            min-height: 100vh;
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* Enhanced Modern Navigation */
+        .header {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 0;
+            box-shadow: var(--shadow-medium);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            transition: var(--transition-normal);
+            border-bottom: 1px solid var(--border-light);
+        }
+
+        .header.scrolled {
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: var(--shadow-large);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: auto 1fr auto;
+            align-items: center;
+            padding: 0 24px;
+            gap: 32px;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 28px;
+            font-weight: 800;
+            background: var(--nature-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            transition: var(--transition-normal);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        .logo:hover {
+            transform: scale(1.05);
+            filter: brightness(1.1);
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 4px;
+            background: var(--bg-overlay);
+            padding: 8px;
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            justify-self: center;
+        }
+
+        .nav-menu.mobile-open {
+            position: fixed;
+            top: 80px;
+            left: 0;
+            right: 0;
+            flex-direction: column;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 20px;
+            box-shadow: var(--shadow-large);
+            border-radius: 0;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 12px 24px;
+            border-radius: 16px;
+            transition: var(--transition-normal);
+            position: relative;
+            white-space: nowrap;
+            font-size: 14px;
+        }
+
+        .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-secondary);
+            border-radius: 16px;
+            opacity: 0;
+            transform: scale(0.8);
+            transition: var(--transition-normal);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .nav-link:hover::before,
+        .nav-link.active::before {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            color: var(--text-primary);
+            transform: translateY(-1px);
+        }
+
+        .nav-link.active {
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            justify-self: end;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: 20px;
+            padding: 12px 20px;
+            width: 280px;
+            transition: var(--transition-normal);
+            border: 2px solid transparent;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .search-bar:focus-within {
+            border-color: #00b894;
+            box-shadow: 0 0 0 4px rgba(0, 184, 148, 0.1);
+            transform: scale(1.02);
+            width: 320px;
+        }
+
+        .search-bar input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            padding: 0 8px;
+            font-size: 14px;
+            color: var(--text-primary);
+        }
+
+        .search-bar input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .search-icon {
+            font-size: 16px;
+            color: #00b894;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            padding: 4px;
+            border-radius: 50%;
+        }
+
+        .search-icon:hover {
+            transform: scale(1.1);
+            background: rgba(0, 184, 148, 0.1);
+        }
+
+        .action-btn {
+            position: relative;
+            background: var(--bg-secondary);
+            border: none;
+            padding: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 18px;
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .action-btn:hover {
+            background: var(--nature-gradient);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .cart-count {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            background: #fd79a8;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .mobile-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-primary);
+        }
+
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+
+        .hero-banner {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-xl);
+            padding: 80px 60px;
+            text-align: center;
+            margin-bottom: 60px;
+            box-shadow: var(--shadow-large);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-banner::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg, transparent, rgba(0, 184, 148, 0.05), transparent);
+            animation: rotate 30s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .hero-title {
+            font-size: 56px;
+            font-weight: 900;
+            background: var(--nature-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 24px;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 640px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
+            font-weight: 400;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .cta-button {
+            background: var(--nature-gradient);
+            color: white;
+            padding: 18px 36px;
+            border: none;
+            border-radius: 50px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            text-transform: none;
+            letter-spacing: 0;
+            position: relative;
+            overflow: hidden;
+            min-width: 160px;
+        }
+
+        .cta-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.6s;
+        }
+
+        .cta-button:hover::before {
+            left: 100%;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(0, 184, 148, 0.3);
+            filter: brightness(1.1);
+        }
+
+        .cta-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--border-soft);
+        }
+
+        .cta-secondary:hover {
+            background: var(--bg-secondary);
+            border-color: #00b894;
+            color: #00b894;
+            box-shadow: var(--shadow-medium);
+        }
+
+        .section {
+            margin-bottom: 80px;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 40px;
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 16px;
+            position: relative;
+        }
+
+        .section-subtitle {
+            font-size: 18px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 24px;
+            margin-bottom: 40px;
+        }
+
+        .category-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            padding: 32px 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            box-shadow: var(--shadow-soft);
+            border: 1px solid var(--border-light);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .category-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--nature-gradient);
+            opacity: 0;
+            transition: var(--transition-normal);
+            z-index: -1;
+        }
+
+        .category-card:hover::before {
+            opacity: 1;
+        }
+
+        .category-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-large);
+            color: white;
+        }
+
+        .category-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
+            transition: var(--transition-normal);
+        }
+
+        .category-card:hover .category-icon {
+            transform: scale(1.2);
+        }
+
+        .category-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            transition: var(--transition-normal);
+        }
+
+        .category-card:hover .category-name {
+            color: white;
+        }
+
+        .category-count {
+            color: var(--text-secondary);
+            font-size: 14px;
+            font-weight: 500;
+            transition: var(--transition-normal);
+        }
+
+        .category-card:hover .category-count {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .products-filter {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 12px 24px;
+            border: 2px solid var(--border-soft);
+            background: var(--bg-secondary);
+            color: var(--text-secondary);
+            border-radius: 50px;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-weight: 500;
+            font-size: 14px;
+            text-transform: none;
+        }
+
+        .filter-btn:hover,
+        .filter-btn.active {
+            background: var(--nature-gradient);
+            color: white;
+            border-color: transparent;
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 32px;
+        }
+
+        .product-card {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            box-shadow: var(--shadow-soft);
+            transition: var(--transition-normal);
+            cursor: pointer;
+            border: 1px solid var(--border-light);
+            position: relative;
+        }
+
+        .product-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-large);
+        }
+
+        .product-card.hidden {
+            display: none;
+        }
+
+        .product-image {
+            width: 100%;
+            height: 220px;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .product-card:hover .product-image img {
+            transform: scale(1.1);
+        }
+
+        .product-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: var(--warm-gradient);
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            animation: bounce 2s infinite;
+        }
+
+        .product-badge.new {
+            background: var(--nature-gradient);
+        }
+
+        .product-badge.best {
+            background: var(--accent-gradient);
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-3px); }
+            60% { transform: translateY(-2px); }
+        }
+
+        .product-info {
+            padding: 24px;
+        }
+
+        .product-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            line-height: 1.4;
+            transition: var(--transition-normal);
+        }
+
+        .product-card:hover .product-title {
+            color: #00b894;
+        }
+
+        .product-description {
+            color: var(--text-secondary);
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .product-price {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .current-price {
+            font-size: 24px;
+            font-weight: 700;
+            background: var(--nature-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .original-price {
+            font-size: 16px;
+            color: var(--text-muted);
+            text-decoration: line-through;
+            font-weight: 400;
+        }
+
+        .product-rating {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 16px;
+        }
+
+        .stars {
+            color: #fbbf24;
+            font-size: 14px;
+        }
+
+        .rating-text {
+            color: var(--text-secondary);
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        /* Enhanced Product Actions */
+        .product-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .buy-buttons {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .platform-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 16px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 13px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .platform-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .platform-btn:hover::before {
+            left: 100%;
+        }
+
+        .platform-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            filter: brightness(1.1);
+        }
+
+        .platform-btn:active {
+            transform: translateY(0);
+            transition: transform 0.1s;
+        }
+
+        .shopee-btn {
+            background: var(--shopee-gradient);
+            color: white;
+        }
+
+        .shopee-btn:hover {
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        .tokopedia-btn {
+            background: var(--tokopedia-gradient);
+            color: white;
+        }
+
+        .tokopedia-btn:hover {
+            box-shadow: 0 8px 25px rgba(66, 184, 131, 0.4);
+        }
+
+        .lazada-btn {
+            background: var(--lazada-gradient);
+            color: white;
+        }
+
+        .lazada-btn:hover {
+            box-shadow: 0 8px 25px rgba(15, 20, 109, 0.4);
+        }
+
+        .blibli-btn {
+            background: var(--blibli-gradient);
+            color: white;
+        }
+
+        .blibli-btn:hover {
+            box-shadow: 0 8px 25px rgba(0, 85, 170, 0.4);
+        }
+
+        .secondary-actions {
+            display: flex;
+            gap: 8px;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .btn-secondary {
+            background: rgba(0, 184, 148, 0.05);
+            color: #00b894;
+            border: 1px solid rgba(0, 184, 148, 0.2);
+            padding: 10px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            transition: var(--transition-normal);
+            font-size: 16px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(0, 184, 148, 0.1);
+            transform: scale(1.05);
+        }
+
+        .btn-secondary.active {
+            background: var(--warm-gradient);
+            color: white;
+            border-color: transparent;
+        }
+
+        .compare-btn {
+            background: rgba(116, 185, 255, 0.05);
+            color: #74b9ff;
+            border: 1px solid rgba(116, 185, 255, 0.2);
+        }
+
+        .compare-btn:hover {
+            background: rgba(116, 185, 255, 0.1);
+        }
+
+        .compare-btn.active {
+            background: var(--cool-gradient);
+            color: white;
+        }
+
+        .share-btn {
+            background: rgba(253, 121, 168, 0.05);
+            color: #fd79a8;
+            border: 1px solid rgba(253, 121, 168, 0.2);
+        }
+
+        .share-btn:hover {
+            background: rgba(253, 121, 168, 0.1);
+        }
+
+        .platform-indicator {
+            font-size: 11px;
+            color: var(--text-muted);
+            text-align: center;
+            margin-top: 8px;
+        }
+
+        .footer {
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 60px 0 30px;
+            margin-top: 80px;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            text-align: center;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            margin-bottom: 32px;
+            font-size: 16px;
+            line-height: 1.6;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .social-link {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--nature-gradient);
+            color: white;
+            border-radius: 50%;
+            text-decoration: none;
+            transition: var(--transition-normal);
+            font-size: 20px;
+        }
+
+        .social-link:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: var(--shadow-medium);
+        }
+
+        .footer-bottom {
+            padding-top: 24px;
+            border-top: 1px solid var(--border-soft);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Scroll Progress */
+        .scroll-progress {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 3px;
+            background: var(--nature-gradient);
+            z-index: 1001;
+            transition: width 0.1s ease;
+        }
+
+        /* Floating Cart */
+        .floating-cart {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            background: var(--nature-gradient);
+            color: white;
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: var(--shadow-large);
+            transition: var(--transition-normal);
+            z-index: 999;
+            opacity: 0;
+            transform: scale(0);
+        }
+
+        .floating-cart.show {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .floating-cart:hover {
+            transform: scale(1.1);
+            box-shadow: 0 20px 40px rgba(0, 184, 148, 0.4);
+        }
+
+        .floating-cart .cart-count {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            background: var(--warm-gradient);
+            min-width: 20px;
+            height: 20px;
+            font-size: 11px;
+        }
+
+        /* Toast Notifications */
+        .toast {
+            position: fixed;
+            top: 100px;
+            right: 24px;
+            background: var(--bg-card);
+            backdrop-filter: blur(20px);
+            padding: 16px 24px;
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-large);
+            z-index: 10000;
+            transform: translateX(400px);
+            transition: var(--transition-normal);
+            max-width: 320px;
+            border: 1px solid var(--border-light);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+        }
+
+        .toast.success {
+            border-left: 4px solid #00b894;
+        }
+
+        .toast.error {
+            border-left: 4px solid #fd79a8;
+        }
+
+        .toast.warning {
+            border-left: 4px solid #fdcb6e;
+        }
+
+        .toast.info {
+            border-left: 4px solid #74b9ff;
+        }
+
+        /* Loading Animation */
+        .loading-btn {
+            position: relative;
+            pointer-events: none;
+        }
+
+        .loading-btn::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-top: 2px solid white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%, -50%);
+        }
+
+        @keyframes spin {
+            0% { transform: translate(-50%, -50%) rotate(0deg); }
+            100% { transform: translate(-50%, -50%) rotate(360deg); }
+        }
+
+        /* Animation Classes */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .product-card, .category-card {
+            opacity: 0;
+            animation: fadeInUp 0.6s ease forwards;
+        }
+
+        .product-card:nth-child(odd) {
+            animation: slideInLeft 0.6s ease forwards;
+        }
+
+        .product-card:nth-child(even) {
+            animation: slideInRight 0.6s ease forwards;
+        }
+
+        .product-card:nth-child(1) { animation-delay: 0.1s; }
+        .product-card:nth-child(2) { animation-delay: 0.2s; }
+        .product-card:nth-child(3) { animation-delay: 0.3s; }
+        .product-card:nth-child(4) { animation-delay: 0.4s; }
+        .product-card:nth-child(5) { animation-delay: 0.5s; }
+        .product-card:nth-child(6) { animation-delay: 0.6s; }
+
+        .category-card:nth-child(1) { animation-delay: 0.1s; }
+        .category-card:nth-child(2) { animation-delay: 0.2s; }
+        .category-card:nth-child(3) { animation-delay: 0.3s; }
+        .category-card:nth-child(4) { animation-delay: 0.4s; }
+        .category-card:nth-child(5) { animation-delay: 0.5s; }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .nav-menu {
+                display: none;
+            }
+            
+            .nav-menu.mobile-open {
+                display: flex;
+            }
+            
+            .mobile-toggle {
+                display: block;
+            }
+            
+            .search-bar {
+                width: 220px;
+            }
+            
+            .search-bar:focus-within {
+                width: 260px;
+            }
+            
+            .hero-title {
+                font-size: 40px;
+            }
+            
+            .main-container {
+                padding: 30px 20px;
+            }
+
+            .nav-container {
+                grid-template-columns: auto auto;
+                gap: 16px;
+            }
+
+            .header-actions {
+                order: 3;
+                grid-column: 1 / -1;
+                justify-self: center;
+                margin-top: 16px;
+                padding-bottom: 16px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner {
+                padding: 60px 40px;
+            }
+            
+            .hero-title {
+                font-size: 32px;
+            }
+            
+            .hero-subtitle {
+                font-size: 18px;
+            }
+            
+            .products-filter {
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            
+            .categories-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+                gap: 16px;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            
+            .nav-container {
+                padding: 0 20px;
+                height: auto;
+                min-height: 80px;
+            }
+
+            .search-bar {
+                width: 200px;
+            }
+
+            .search-bar:focus-within {
+                width: 240px;
+            }
+
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .cta-button {
+                width: 100%;
+                max-width: 280px;
+            }
+
+            .buy-buttons {
+                flex-direction: column;
+            }
+
+            .platform-btn {
+                min-width: auto;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 28px;
+            }
+            
+            .section-title {
+                font-size: 32px;
+            }
+            
+            .filter-btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+            
+            .product-info {
+                padding: 20px;
+            }
+
+            .hero-banner {
+                padding: 40px 24px;
+            }
+
+            .main-container {
+                padding: 20px 16px;
+            }
+
+            .nav-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .header-actions {
+                order: 2;
+                grid-column: 1;
+                margin-top: 12px;
+                padding-bottom: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Scroll Progress Bar -->
+    <div class="scroll-progress" id="scrollProgress"></div>
+
+    <!-- Enhanced Header -->
+    <header class="header" id="header">
+        <div class="nav-container">
+            <div class="logo" onclick="scrollToTop()">
+                <span>🌟</span> TokoKita.id
+            </div>
+            
+            <nav>
+                <ul class="nav-menu" id="navMenu">
+                    <li><a href="#home" class="nav-link active" onclick="setActiveNav(this)">Beranda</a></li>
+                    <li><a href="#categories" class="nav-link" onclick="setActiveNav(this)">Kategori</a></li>
+                    <li><a href="#products" class="nav-link" onclick="setActiveNav(this)">Produk</a></li>
+                    <li><a href="#about" class="nav-link" onclick="setActiveNav(this)">Tentang</a></li>
+                    <li><a href="#contact" class="nav-link" onclick="setActiveNav(this)">Kontak</a></li>
+                </ul>
+            </nav>
+
+            <div class="header-actions">
+                <div class="search-container">
+                    <div class="search-bar">
+                        <input type="text" placeholder="Cari produk impian..." id="searchInput" onkeypress="handleSearchKeypress(event)">
+                        <span class="search-icon" onclick="performSearch()">🔍</span>
+                    </div>
+                </div>
+                
+                <div style="display: flex; gap: 12px; align-items: center;">
+                    <button class="action-btn" onclick="toggleWishlist()" title="Wishlist">
+                        💝
+                        <span class="cart-count" id="wishlistCount" style="display: none;">0</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleCart()" title="Keranjang">
+                        🛒
+                        <span class="cart-count" id="cartCount">0</span>
+                    </button>
+                    <button class="action-btn" onclick="toggleUserMenu()" title="Akun">👤</button>
+                    <button class="mobile-toggle" onclick="toggleMobileMenu()">☰</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Floating Cart Button -->
+    <div class="floating-cart" id="floatingCart" onclick="toggleCart()">
+        🛒
+        <span class="cart-count" id="floatingCartCount">0</span>
+    </div>
+
+    <!-- Main Container -->
+    <div class="main-container">
+        <!-- Enhanced Hero Banner -->
+        <section class="hero-banner" id="home">
+            <h1 class="hero-title">Temukan Kebahagiaan Berbelanja</h1>
+            <p class="hero-subtitle">
+                Koleksi produk pilihan berkualitas premium dengan harga terjangkau. 
+                Pengiriman cepat, garansi terpercaya, dan kepuasan berbelanja yang tak terlupakan.
+            </p>
+            <div class="cta-buttons">
+                <button class="cta-button" onclick="scrollToProducts()">
+                    Jelajahi Produk ✨
+                </button>
+                <button class="cta-button cta-secondary" onclick="scrollToCategories()">
+                    Lihat Kategori 📂
+                </button>
+            </div>
+        </section>
+
+        <!-- Enhanced Categories -->
+        <section class="section" id="categories">
+            <div class="section-header">
+                <h2 class="section-title">Kategori Favorit</h2>
+                <p class="section-subtitle">
+                    Temukan produk terbaik dalam berbagai kategori pilihan yang telah dikurasi khusus untuk Anda
+                </p>
+            </div>
+            <div class="categories-grid">
+                <div class="category-card" onclick="filterProducts('elektronik')" data-category="elektronik">
+                    <div class="category-icon">📱</div>
+                    <div class="category-name">Elektronik</div>
+                    <div class="category-count">120+ produk premium</div>
+                </div>
+                <div class="category-card" onclick="filterProducts('fashion')" data-category="fashion">
+                    <div class="category-icon">👗</div>
+                    <div class="category-name">Fashion</div>
+                    <div class="category-count">200+ koleksi terbaru</div>
+                </div>
+                <div class="category-card" onclick="filterProducts('rumah')" data-category="rumah">
+                    <div class="category-icon">🏡</div>
+                    <div class="category-name">Rumah Tangga</div>
+                    <div class="category-count">150+ perlengkapan</div>
+                </div>
+                <div class="category-card" onclick="filterProducts('kecantikan')" data-category="kecantikan">
+                    <div class="category-icon">✨</div>
+                    <div class="category-name">Kecantikan</div>
+                    <div class="category-count">80+ produk kecantikan</div>
+                </div>
+                <div class="category-card" onclick="filterProducts('olahraga')" data-category="olahraga">
+                    <div class="category-icon">🏃‍♂️</div>
+                    <div class="category-name">Olahraga</div>
+                    <div class="category-count">90+ peralatan sport</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Enhanced Products Section -->
+        <section class="section" id="products">
+            <div class="section-header">
+                <h2 class="section-title">Produk Pilihan Terbaik</h2>
+                <p class="section-subtitle">
+                    Produk berkualitas tinggi dengan harga terbaik, dipilih khusus untuk memberikan pengalaman berbelanja yang luar biasa
+                </p>
+            </div>
+            
+            <!-- Enhanced Filter Buttons -->
+            <div class="products-filter">
+                <button class="filter-btn active" onclick="filterProducts('all')" data-filter="all">
+                    Semua Produk 🌟
+                </button>
+                <button class="filter-btn" onclick="filterProducts('terbaru')" data-filter="terbaru">
+                    Terbaru 🆕
+                </button>
+                <button class="filter-btn" onclick="filterProducts('terlaris')" data-filter="terlaris">
+                    Terlaris 🔥
+                </button>
+                <button class="filter-btn" onclick="filterProducts('promo')" data-filter="promo">
+                    Promo 💰
+                </button>
+                <button class="filter-btn" onclick="filterProducts('rating')" data-filter="rating">
+                    Rating Tinggi ⭐
+                </button>
+            </div>
+
+            <!-- Enhanced Products Grid -->
+            <div class="products-grid" id="productsGrid">
+                <!-- PRODUK 1 - Gojodoq Mini Kipas -->
+                <div class="product-card" data-category="elektronik" data-filter="promo terlaris">
+                    <div class="product-image">
+                        <img src="https://down-id.img.susercontent.com/file/id-11134207-7r98o-lwp4u5fyeccd6a" alt="Gojodoq Mini Kipas Turbo Digital">
+                        <div class="product-badge">-48% 🏷️</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Gojodoq Mini Kipas Turbo Digital Adjustable</h3>
+                        <p class="product-description">Hembusan Kesejukan di Setiap Momen. Rasakan sentuhan lembut angin yang menyegarkan, menghilangkan gerah dan memberikan kenyamanan instan. Dengan desain modern yang menawan, hadirkan kesejukan yang menenangkan dalam setiap ruangan.</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 128.000</span>
+                            <span class="original-price">Rp 250.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-text">(4.8) 124 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/20kvZ7dYgq" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Gojodoq Mini Kipas Turbo', 'Shopee', this)">
+                                    <span>🛒</span> Shopee
+                              </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Gojodoq Mini Kipas Turbo')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Harga terbaik: <strong>Shopee</strong> • Gratis ongkir tersedia
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 2 - Sneakers Pria -->
+                <div class="product-card" data-category="fashion" data-filter="terbaru terlaris">
+                    <div class="product-image">
+                        <img src="https://down-tx-id.img.susercontent.com/id-11134207-7rbk3-m9r1y8bsadbv41.webp" alt="Sneakers Pria Grey White">
+                        <div class="product-badge new">-9% 🏷️</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Sneakers Pria Grey White Gratis Kaos Kaki</h3>
+                        <p class="product-description">Nggak cuma sepatu. Ini adalah bagian dari perjalananmu. Setiap langkah yang kamu ambil—menuju impian, kerja keras, atau sekadar healing sore—sneakers ini bakal jadi saksi bisu.</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 182.000</span>
+                            <span class="original-price">Rp 200.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-text">(4.9) 124 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/AKQ9Q2qQL2" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Sneakers Pria Grey White', 'Shopee', this)">
+                                    <span>🛒</span> Shopee
+                                </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Sneakers Pria Grey White')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Style terbaru: <strong>Shopee</strong> • Gratis kaos kaki tersedia
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 3 - Book -->
+                <div class="product-card" data-category="rumah" data-filter="rating terlaris">
+                    <div class="product-image">
+                        <img src="https://down-ws-id.img.susercontent.com/id-11134207-7ra0u-mbxi117hsta48d.webp" alt="Buku The Winning Mindset">
+                        <div class="product-badge best">BEST ⭐</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Buku The Winning Mindset - Berpikir Seperti Pemenang</h3>
+                        <p class="product-description">Buku The Winning Mindset karya Mahadewa Adi Seta hadir untuk kamu yang ingin bangkit, berubah, dan menang dalam hidup.Bukan hanya teori, tapi panduan nyata membentuk pola pikir pemenang yang dibutuhkan untuk menaklukkan dunia nyata.</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 59.900</span>
+                          	<span class="original-price">Rp.80.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-text">(4.9) 156 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/2qKCATAAAu" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Buku The Winning Mindset', 'Shopee', this)">
+                                    <span>📦</span> Shopee
+                                </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Coffee Maker')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Garansi resmi terlama: <strong>Blibli</strong> • Cicilan 0% tersedia
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PRODUK 4 - Book -->
+                <div class="product-card" data-category="rumah" data-filter="promo terlaris">
+                    <div class="product-image">
+                        <img src="https://down-ws-id.img.susercontent.com/id-11134207-7ra0m-mcg41j6s9zzve3.webp" alt="Buku The Principles Of Power ">
+                        <div class="product-badge">-22,5% 🏷️</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Buku The Principles Of Power</h3>
+                        <p class="product-description">Sering dimanfaatkan orang? Buku ini bongkar cara orang memanipulasi tanpa kamu sadari. "The Principles of Power" ajarkan cara ambil alih kendali hidupmu. BONUS blocknote keren, stok terbatas!. Wajib punya kalau kamu mau jadi lebih kuat dan cerdas secara sosial!</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 62.000</span>
+                            <span class="original-price">Rp 80.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐☆</span>
+                            <span class="rating-text">(4.7) 203 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/60HFdwkBYc" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Book The Principles Of Power ', 'Shopee', this)">
+                                    <span>🛒</span> Shopee
+                              </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Skincare Set')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Review terbanyak: <strong>Shopee</strong> • Bundle promo tersedia
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              	<!-- Produk 
+
+                <!-- PRODUK 5 - Scinkare -->
+                <div class="product-card" data-category="kecantikan" data-filter="promo terlaris">
+                    <div class="product-image">
+                        <img src="https://down-tx-id.img.susercontent.com/id-11134207-7qul8-lhyhmqbee3ha86.webp" alt="Paket 3 Pcs Insani Skincare Original">
+                        <div class="product-badge">BEST ⭐</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Paket 3 Pcs Insani Skincare Original BPOM </h3>
+                        <p class="product-description">Dirancang khusus untuk kamu yang ingin mengucapkan selamat tinggal pada jerawat dan kusam, serta menyambut wajah 							sehat, lembut, dan bercahaya alami.</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 594.000</span>
+                          <span class="original-price">     </span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-text">(4.9) 78 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/1BC0yjb2v8" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Scincare BPOM ', 'Shopee', this)">
+                                    <span>🛒</span> Shopee
+                              </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Sepatu Running')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Ukuran terlengkap: <strong>Lazada</strong> • Tukar size gratis
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+              	<!---Produk 6 - Buku UTBK 2026 --->
+                <div class="product-card" data-category="rumah" data-filter="promo terlaris">
+                    <div class="product-image">
+                        <img src="https://down-cvs-id.img.susercontent.com/id-11134207-7ra0n-mbac3zjvivh5ff.webp" alt="Buku Paten UTBK SNBT 2026">
+                        <div class="product-badge"> -17,5🏷️ </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">Buku Paten UTBK SNBT 2026 Soal Asli Pixelindo </h3>
+                        <p class="product-description">Jangan biarkan mimpi anak Anda pupus karena kurangnya persiapan yang tepat. Setiap halaman dalam buku ini adalah tangga menuju masa depan yang lebih cerah. Ketika teman-teman sebayanya merayakan keberhasilan masuk PTN impian, anak Anda pun berhak merasakan kebahagiaan yang sama.</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 165.000</span>
+                          <span class="original-price">Rp 200.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-text">(4.9) 78 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/3ftSV98w8u" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Book ', 'Shopee', this)">
+                                    <span>🛒</span> Shopee
+                              </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Sepatu Running')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Ukuran terlengkap: <strong>Lazada</strong> • Tukar size gratis
+                            </div>
+                        </div>
+                    </div>
+                </div>
+              
+              	<!-- Perkakas 8-->
+                <div class="product-card" data-category="rumah" data-filter="promo terlaris">
+                    <div class="product-image">
+                        <img src="https://down-bs-id.img.susercontent.com/id-11134207-7rbkd-m8p5eiwn924bfb.webp" alt="PROMO APR Impact Wrench 1850Nm 5Yr Warranty ">
+                        <div class="product-badge"> -37,6🏷️ </div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">APR Impact Wrench 1850Nm 5Yr Warranty || APR Impact Wrench 1/2 Inch 1850Nm </h3>
+                        <p class="product-description">Sering kehilangan mata bor? atau bor anda harus dicolok sana sini? udh ngk zaman! Sekarang sudah hadir perkakas yang lebih lebih canggih anti kabel kelibat lagi maupun kehilangan mata bor. Cussss beli sekarang mumpung harganya promo loh!!</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 312.000</span>
+                          <span class="original-price">Rp 500.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐☆</span>
+                            <span class="rating-text">(4.7) 78 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/3qCwCyGJhE" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('Perkakas', 'Shopee', this)">
+                                    <span>🛒</span> Shopee
+                              </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Sepatu Running')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Ukuran terlengkap: <strong>Lazada</strong> • Tukar size gratis
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- PRODUK 7 - Jam tangan mewah -->
+                <div class="product-card" data-category="elektronik" data-filter="rating promo">
+                    <div class="product-image">
+                        <img src="https://down-ws-id.img.susercontent.com/sg-11134201-7rdwm-lzxizghrisjqf1.webp" alt="ERNIE KLEIN">
+                        <div class="product-badge best">BEST ⭐</div>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">ERNIE KLEIN Jam Tangan Pria Anti Air</h3>
+                        <p class="product-description">Tampil percaya diri dengan kemewahan elegan. Desain hitam legam, detail berkilau, dan tahan air. Bukan sekadar jam  tangan—ini simbol kekuatan dan gaya pria sejati.</p>
+                        <div class="product-price">
+                            <span class="current-price">Rp 393.860</span>
+                          <span class="original-price"> RP 420.000</span>
+                        </div>
+                        <div class="product-rating">
+                            <span class="stars">⭐⭐⭐⭐⭐</span>
+                            <span class="rating-text">(4.9) 167 ulasan</span>
+                        </div>
+                        <div class="product-actions">
+                            <div class="buy-buttons">
+                                <a href="https://s.shopee.co.id/8pbUIUXAYA" 
+                                   target="_blank" 
+                                   class="platform-btn shopee-btn"
+                                   onclick="trackPurchase('ERNIE KLEIN', 'Shopee', this)">
+                                    <span>📦</span> Shopee
+                                </a>
+                            </div>
+                            <div class="secondary-actions">
+                                <button class="btn-secondary" onclick="toggleProductWishlist(this)" title="Tambah ke Wishlist">❤️</button>
+                                <button class="btn-secondary compare-btn" onclick="toggleCompare(this)" title="Bandingkan">⚖️</button>
+                                <button class="btn-secondary share-btn" onclick="shareProduct('Headphones Pro')" title="Bagikan">📤</button>
+                            </div>
+                            <div class="platform-indicator">
+                                💡 Garansi internasional: <strong>Blibli</strong> • Test dengar tersedia
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Enhanced Footer -->
+    <footer class="footer">
+        <div class="footer-container">
+            <p class="footer-text">
+                🌟 TokoKita - Marketplace terpercaya dengan produk berkualitas premium. 
+                Belanja online dengan mudah, aman, dan menyenangkan. Customer service 24/7 siap membantu Anda.
+            </p>
+            <div class="social-links">
+                <a href="#" class="social-link" title="Facebook" onclick="openSocialMedia('Facebook')">📘</a>
+                <a href="#" class="social-link" title="Instagram" onclick="openSocialMedia('Instagram')">📷</a>
+                <a href="#" class="social-link" title="Twitter" onclick="openSocialMedia('Twitter')">🐦</a>
+                <a href="#" class="social-link" title="WhatsApp" onclick="openSocialMedia('WhatsApp')">💬</a>
+            </div>
+            <div class="footer-bottom">
+                © 2024 TokoKita. Semua hak dilindungi. Dibuat dengan ❤️ untuk pengalaman belanja terbaik Anda.
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript untuk semua fungsi interaktif -->
+    <script>
+        // Global variables
+        let cartItems = [];
+        let wishlistItems = [];
+        let compareItems = [];
+        let currentFilter = 'all';
+        let mobileMenuOpen = false;
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeScrollProgress();
+            initializeFloatingCart();
+            updateCartCounts();
+            showWelcomeToast();
+        });
+
+        // Scroll Progress Bar
+        function initializeScrollProgress() {
+            window.addEventListener('scroll', updateScrollProgress);
+        }
+
+        function updateScrollProgress() {
+            const scrollProgress = document.getElementById('scrollProgress');
+            const header = document.getElementById('header');
+            const scrollTop = window.pageYOffset;
+            const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrollPercent = (scrollTop / docHeight) * 100;
+            
+            scrollProgress.style.width = scrollPercent + '%';
+            
+            // Header scroll effect
+            if (scrollTop > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }
+
+        // Floating Cart
+        function initializeFloatingCart() {
+            window.addEventListener('scroll', toggleFloatingCart);
+        }
+
+        function toggleFloatingCart() {
+            const floatingCart = document.getElementById('floatingCart');
+            const scrollTop = window.pageYOffset;
+            
+            if (scrollTop > 300) {
+                floatingCart.classList.add('show');
+            } else {
+                floatingCart.classList.remove('show');
+            }
+        }
+
+        // Navigation Functions
+        function setActiveNav(clickedNav) {
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Add active class to clicked nav
+            clickedNav.classList.add('active');
+            
+            // Smooth scroll to section
+            const targetId = clickedNav.getAttribute('href').substring(1);
+            const targetElement = document.getElementById(targetId);
+            
+            if (targetElement) {
+                targetElement.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+            
+            // Close mobile menu if open
+            if (mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        }
+
+        function toggleMobileMenu() {
+            const navMenu = document.getElementById('navMenu');
+            mobileMenuOpen = !mobileMenuOpen;
+            
+            if (mobileMenuOpen) {
+                navMenu.classList.add('mobile-open');
+            } else {
+                navMenu.classList.remove('mobile-open');
+            }
+        }
+
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function scrollToProducts() {
+            document.getElementById('products').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function scrollToCategories() {
+            document.getElementById('categories').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        // Search Functions
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const searchTerm = searchInput.value.trim().toLowerCase();
+            
+            if (searchTerm === '') {
+                showToast('Masukkan kata kunci pencarian', 'warning');
+                return;
+            }
+            
+            const productCards = document.querySelectorAll('.product-card');
+            let foundCount = 0;
+            
+            productCards.forEach(card => {
+                const title = card.querySelector('.product-title').textContent.toLowerCase();
+                const description = card.querySelector('.product-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.classList.remove('hidden');
+                    foundCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Reset filter buttons
+            document.querySelectorAll('.filter-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            if (foundCount > 0) {
+                showToast(`Ditemukan ${foundCount} produk untuk "${searchTerm}"`, 'success');
+                scrollToProducts();
+            } else {
+                showToast(`Tidak ada produk ditemukan untuk "${searchTerm}"`, 'info');
+                // Show all products again
+                productCards.forEach(card => {
+                    card.classList.remove('hidden');
+                });
+            }
+        }
+
+        function handleSearchKeypress(event) {
+            if (event.key === 'Enter') {
+                performSearch();
+            }
+        }
+
+        // Filter Functions
+        function filterProducts(filter) {
+            currentFilter = filter;
+            const productCards = document.querySelectorAll('.product-card');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            
+            // Update active filter button
+            filterButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.getAttribute('data-filter') === filter || 
+                    (btn.onclick && btn.onclick.toString().includes(`'${filter}'`))) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            // Filter products
+            let visibleCount = 0;
+            productCards.forEach(card => {
+                const categories = card.getAttribute('data-category') || '';
+                const filters = card.getAttribute('data-filter') || '';
+                
+                let shouldShow = false;
+                
+                if (filter === 'all') {
+                    shouldShow = true;
+                } else if (categories.includes(filter)) {
+                    shouldShow = true;
+                } else if (filters.includes(filter)) {
+                    shouldShow = true;
+                }
+                
+                if (shouldShow) {
+                    card.classList.remove('hidden');
+                    visibleCount++;
+                } else {
+                    card.classList.add('hidden');
+                }
+            });
+            
+            // Show result
+            const filterName = getFilterDisplayName(filter);
+            showToast(`Menampilkan ${visibleCount} produk ${filterName}`, 'info');
+            
+            // Scroll to products if filtering by category
+            if (filter !== 'all') {
+                setTimeout(() => {
+                    scrollToProducts();
+                }, 300);
+            }
+        }
+
+        function getFilterDisplayName(filter) {
+            const names = {
+                'all': '',
+                'elektronik': 'Elektronik',
+                'fashion': 'Fashion',
+                'rumah': 'Rumah Tangga',
+                'kecantikan': 'Kecantikan',
+                'olahraga': 'Olahraga',
+                'terbaru': 'Terbaru',
+                'terlaris': 'Terlaris',
+                'promo': 'Promo',
+                'rating': 'Rating Tinggi'
+            };
+            return names[filter] || filter;
+        }
+
+        // Cart Functions
+        function toggleCart() {
+            if (cartItems.length === 0) {
+                showToast('Keranjang belanja masih kosong', 'info');
+            } else {
+                showToast(`Keranjang berisi ${cartItems.length} item`, 'success');
+            }
+            console.log('Cart items:', cartItems);
+        }
+
+        function addToCart(productName) {
+            cartItems.push({
+                name: productName,
+                timestamp: new Date()
+            });
+            updateCartCounts();
+            showToast(`${productName} ditambahkan ke keranjang!`, 'success');
+        }
+
+        function updateCartCounts() {
+            const cartCount = document.getElementById('cartCount');
+            const floatingCartCount = document.getElementById('floatingCartCount');
+            
+            cartCount.textContent = cartItems.length;
+            floatingCartCount.textContent = cartItems.length;
+            
+            if (cartItems.length > 0) {
+                cartCount.style.display = 'flex';
+                floatingCartCount.style.display = 'flex';
+            } else {
+                cartCount.style.display = 'none';
+                floatingCartCount.style.display = 'none';
+            }
+        }
+
+        // Wishlist Functions
+        function toggleWishlist() {
+            const wishlistCount = document.getElementById('wishlistCount');
+            
+            if (wishlistItems.length === 0) {
+                showToast('Wishlist masih kosong', 'info');
+            } else {
+                showToast(`Wishlist berisi ${wishlistItems.length} item`, 'success');
+                wishlistCount.style.display = 'flex';
+                wishlistCount.textContent = wishlistItems.length;
+            }
+            console.log('Wishlist items:', wishlistItems);
+        }
+
+        function toggleProductWishlist(button) {
+            const productCard = button.closest('.product-card');
+            const productName = productCard.querySelector('.product-title').textContent;
+            
+            const existingIndex = wishlistItems.findIndex(item => item.name === productName);
+            
+            if (existingIndex === -1) {
+                // Add to wishlist
+                wishlistItems.push({
+                    name: productName,
+                    timestamp: new Date()
+                });
+                button.classList.add('active');
+                button.textContent = '💖';
+                showToast(`${productName} ditambahkan ke wishlist!`, 'success');
+            } else {
+                // Remove from wishlist
+                wishlistItems.splice(existingIndex, 1);
+                button.classList.remove('active');
+                button.textContent = '❤️';
+                showToast(`${productName} dihapus dari wishlist`, 'info');
+            }
+            
+            updateWishlistCount();
+        }
+
+        function updateWishlistCount() {
+            const wishlistCount = document.getElementById('wishlistCount');
+            
+            if (wishlistItems.length > 0) {
+                wishlistCount.style.display = 'flex';
+                wishlistCount.textContent = wishlistItems.length;
+            } else {
+                wishlistCount.style.display = 'none';
+            }
+        }
+
+        // Compare Functions
+        function toggleCompare(button) {
+            const productCard = button.closest('.product-card');
+            const productName = productCard.querySelector('.product-title').textContent;
+            
+            const existingIndex = compareItems.findIndex(item => item.name === productName);
+            
+            if (existingIndex === -1) {
+                if (compareItems.length >= 3) {
+                    showToast('Maksimal 3 produk untuk perbandingan', 'warning');
+                    return;
+                }
+                
+                // Add to compare
+                compareItems.push({
+                    name: productName,
+                    timestamp: new Date()
+                });
+                button.classList.add('active');
+                showToast(`${productName} ditambahkan ke perbandingan!`, 'success');
+            } else {
+                // Remove from compare
+                compareItems.splice(existingIndex, 1);
+                button.classList.remove('active');
+                showToast(`${productName} dihapus dari perbandingan`, 'info');
+            }
+            
+            if (compareItems.length > 1) {
+                showToast(`${compareItems.length} produk siap dibandingkan`, 'info');
+            }
+        }
+
+        // Share Functions
+        function shareProduct(productName) {
+            if (navigator.share) {
+                navigator.share({
+                    title: `${productName} - TokoKita`,
+                    text: `Lihat produk ${productName} di TokoKita!`,
+                    url: window.location.href
+                }).then(() => {
+                    showToast('Produk berhasil dibagikan!', 'success');
+                }).catch((error) => {
+                    console.log('Error sharing:', error);
+                    fallbackShare(productName);
+                });
+            } else {
+                fallbackShare(productName);
+            }
+        }
+
+        function fallbackShare(productName) {
+            const shareText = `Lihat produk ${productName} di TokoKita! ${window.location.href}`;
+            
+            if (navigator.clipboard) {
+                navigator.clipboard.writeText(shareText).then(() => {
+                    showToast('Link produk disalin ke clipboard!', 'success');
+                });
+            } else {
+                // Fallback for older browsers
+                const textArea = document.createElement('textarea');
+                textArea.value = shareText;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+                showToast('Link produk disalin!', 'success');
+            }
+        }
+
+        // Purchase Tracking
+        function trackPurchase(productName, platform, button) {
+            // Add loading state
+            button.classList.add('loading-btn');
+            button.style.pointerEvents = 'none';
+            
+            setTimeout(() => {
+                button.classList.remove('loading-btn');
+                button.style.pointerEvents = 'auto';
+                showToast(`Mengarahkan ke ${platform} untuk ${productName}`, 'success');
+                
+                // Add to cart automatically
+                addToCart(productName);
+            }, 1000);
+        }
+
+        // User Menu
+        function toggleUserMenu() {
+            showToast('Fitur akun akan segera hadir!', 'info');
+        }
+
+        // Social Media
+        function openSocialMedia(platform) {
+            const urls = {
+                'Facebook': 'https://facebook.com/tokokita',
+                'Instagram': 'https://instagram.com/tokokita',
+                'Twitter': 'https://twitter.com/tokokita',
+                'WhatsApp': 'https://wa.me/6281234567890'
+            };
+            
+            if (urls[platform]) {
+                window.open(urls[platform], '_blank');
+                showToast(`Membuka ${platform}...`, 'info');
+            }
+        }
+
+        // Toast Notifications
+        function showToast(message, type = 'info') {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) {
+                existingToast.remove();
+            }
+            
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = `toast ${type}`;
+            toast.innerHTML = `
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span>${getToastIcon(type)}</span>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Show toast
+            setTimeout(() => {
+                toast.classList.add('show');
+            }, 100);
+            
+            // Hide toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    if (toast.parentNode) {
+                        toast.parentNode.removeChild(toast);
+                    }
+                }, 300);
+            }, 3000);
+        }
+
+        function getToastIcon(type) {
+            const icons = {
+                'success': '✅',
+                'error': '❌',
+                'warning': '⚠️',
+                'info': 'ℹ️'
+            };
+            return icons[type] || 'ℹ️';
+        }
+
+        function showWelcomeToast() {
+            setTimeout(() => {
+                showToast('Selamat datang di TokoKita! 🎉', 'success');
+            }, 1000);
+        }
+
+        // Intersection Observer for animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.animationPlayState = 'running';
+                }
+            });
+        }, observerOptions);
+
+        // Observe all product and category cards
+        document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('.product-card, .category-card').forEach(card => {
+                observer.observe(card);
+            });
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            // Ctrl/Cmd + K untuk fokus search
+            if ((event.ctrlKey || event.metaKey) && event.key === 'k') {
+                event.preventDefault();
+                document.getElementById('searchInput').focus();
+            }
+            
+            // ESC untuk close mobile menu
+            if (event.key === 'Escape' && mobileMenuOpen) {
+                toggleMobileMenu();
+            }
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Performance optimization - lazy loading for images
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        img.src = img.dataset.src || img.src;
+                        img.classList.remove('lazy');
+                        imageObserver.unobserve(img);
+                    }
+                });
+            });
+
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+            });
+        }
+
+        // Error handling for images
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.src = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDAwIiBoZWlnaHQ9IjMwMCIgdmlld0JveD0iMCAwIDQwMCAzMDAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSI0MDAiIGhlaWdodD0iMzAwIiBmaWxsPSIjRjNGNEY2Ii8+CjxwYXRoIGQ9Ik0yMDAgMTUwQzIwMCAxNzIuMDkxIDIwMCAxNzIuMDkxIDIwMCAxNTBaIiBzdHJva2U9IiNEMUQ1REIiIHN0cm9rZS13aWR0aD0iMiIvPgo8cGF0aCBkPSJNMTcwIDEzMEMxNzAgMTM2LjYyNyAxNzUuMzczIDE0MiAxODIgMTQyQzE4OC42MjcgMTQyIDE5NCAxMzYuNjI3IDE5NCAxMzBDMTk0IDEyMy4zNzMgMTg4LjYyNyAxMTggMTgyIDExOEMxNzUuMzczIDExOCAxNzAgMTIzLjM3MyAxNzAgMTMwWiIgZmlsbD0iI0QxRDVEQiIvPgo8cGF0aCBkPSJNMTYwIDE4MEwyMDAgMTQwTDI0MCAxODAiIHN0cm9rZT0iI0QxRDVEQiIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0ianitdoaWcmvdWNkIiBzdHJva2UtbGluZWpvaW49InJvdW5kIi8+Cjx0ZXh0IHg9IjIwMCIgeT0iMjIwIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIiBmaWxsPSIjOTQ5OUE0IiBmb250LXNpemU9IjE0Ij5HYW1iYXIgVGlkYWsgRGl0ZW11a2FuPC90ZXh0Pgo8L3N2Zz4=';
+                this.alt = 'Gambar tidak dapat dimuat';
+            });
+        });
+    </script>
+</body>
+</html>
